@@ -13,12 +13,21 @@ $schedule = isset($_POST['schedule']) ? implode(',', $_POST['schedule']) : ''; /
 $soroteacher = $_POST['soroteacher'];
 $content = $_POST['content'];
 
-//2. DB接続します
+//2. DB接続します(さくらサーバ)
+// ローカルのデータベースにアクセスするための必要な情報を変数に渡す
+$db_name = '';               // データベース名
+$db_host = '';     // DBホスト
+$db_id   = '';               // ユーザー名(さくらサーバはDB名と同一)
+$db_pw   = '';                   // パスワード
+
+// try catch構文でデータベースの情報取得を実施
 try {
-  //ID:'root', Password: xamppは 空白 ''
-  $pdo = new PDO('mysql:dbname=gs_db_class;charset=utf8;host=localhost', 'root', '');
+  $server_info = 'mysql:dbname=' . $db_name . ';charset=utf8;host=' . $db_host;
+  $pdo = new PDO($server_info, $db_id, $db_pw);
 } catch (PDOException $e) {
-  exit('DBConnectError:' . $e->getMessage());
+  // エラーだった場合の情報を返す処理
+  // exitした時点でそれ以降の処理は行われません
+  exit('DB Connection Error:' . $e->getMessage());
 }
 
 //3. データ登録SQL作成

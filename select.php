@@ -1,13 +1,23 @@
 <?php
 require_once('funcs.php');
 
-//1. DB接続
-try {
-  $pdo = new PDO('mysql:dbname=gs_db_class;charset=utf8;host=localhost', 'root', '');
-} catch (PDOException $e) {
-  exit('DBConnectError: ' . $e->getMessage());
-}
+//1. DB接続(さくらサーバ)
+//2. DB接続します(さくらサーバ)
+// ローカルのデータベースにアクセスするための必要な情報を変数に渡す
+$db_name = '';               // データベース名
+$db_host = '';     // DBホスト
+$db_id   = '';               // ユーザー名(さくらサーバはDB名と同一)
+$db_pw   = '';                   // パスワード
 
+// try catch構文でデータベースの情報取得を実施
+try {
+  $server_info = 'mysql:dbname=' . $db_name . ';charset=utf8;host=' . $db_host;
+  $pdo = new PDO($server_info, $db_id, $db_pw);
+} catch (PDOException $e) {
+  // エラーだった場合の情報を返す処理
+  // exitした時点でそれ以降の処理は行われません
+  exit('DB Connection Error:' . $e->getMessage());
+}
 //2. データ取得SQL作成
 $stmt = $pdo->prepare("SELECT * FROM gs_bm_table;");
 $status = $stmt->execute();
